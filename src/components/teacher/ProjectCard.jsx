@@ -1,60 +1,100 @@
 import { useState } from "react";
 
-const ProjectCard = ({ project, updateProject }) => {
-  const [remarks, setRemarks] = useState(project.teacherRemarks || "");
+import { useStudents } from "../../context/StudentContext";
 
-  const updateStatus = (status) => {
-    updateProject(project.id, {
-      status,
-    });
-  };
+const ProjectCard = ({ project, updateProjectStudent }) => {
+  const { getStudentById } = useStudents();
 
-  const saveRemarks = () => {
-    updateProject(project.id, {
-      teacherRemarks: remarks,
-    });
-
-    alert("Saved");
+  const saveStudent = (studentId, updates) => {
+    updateProjectStudent(project.id, studentId, updates);
   };
 
   return (
-    <div className="border rounded p-5">
-      <h3 className="text-xl font-bold">{project.title}</h3>
+    <div className="border rounded-xl p-6 shadow-sm">
+      <h2 className="text-2xl font-bold">{project.title}</h2>
 
-      <p className="mt-2">{project.description}</p>
+      <p className="mt-2 text-gray-600">{project.description}</p>
 
-      <p className="mt-2">Due : {project.deadline}</p>
+      <p className="mt-2">
+        <strong>Technology :</strong> {project.technology}
+      </p>
 
-      <div className="mt-5">
-        <label className="font-semibold">Project Status</label>
+      <p>
+        <strong>Due Date :</strong> {project.dueDate}
+      </p>
 
-        <select
-          className="border p-2 w-full mt-2"
-          value={project.status}
-          onChange={(e) => updateStatus(e.target.value)}
-        >
-          <option value="PENDING">Pending</option>
+      <hr className="my-6" />
 
-          <option value="IN_PROGRESS">In Progress</option>
+      <h3 className="text-xl font-bold mb-5">Assigned Students</h3>
 
-          <option value="COMPLETED">Completed</option>
-        </select>
-      </div>
+      {project.assignedStudents.length === 0 ? (
+        <p>No Students Assigned.</p>
+      ) : (
+        project.assignedStudents.map((studentProject) => {
+          const student = getStudentById(studentProject.studentId);
 
-      <div className="mt-5">
-        <label>Teacher Remarks</label>
+          return (
+            <div
+              key={studentProject.studentId}
+              className="border rounded-lg p-5 mb-5"
+            >
+              <h4 className="font-bold text-lg">{student?.name}</h4>
 
-        <textarea
-          className="border p-2 w-full mt-2"
-          rows={3}
-          value={remarks}
-          onChange={(e) => setRemarks(e.target.value)}
-        />
-      </div>
+              <p>{student?.usn}</p>
 
-      <button className="border px-5 py-2 mt-4" onClick={saveRemarks}>
-        Save Remarks
-      </button>
+              <div className="mt-4">
+                <label>Status</label>
+
+                <select
+                  className="border w-full p-2 mt-2"
+                  value={studentProject.status}
+                  onChange={(e) =>
+                    saveStudent(studentProject.studentId, {
+                      status: e.target.value,
+                    })
+                  }
+                >
+                  <option value="PENDING">Pending</option>
+
+                  <option value="IN_PROGRESS">In Progress</option>
+
+                  <option value="COMPLETED">Completed</option>
+                </select>
+              </div>
+
+              <div className="mt-4">
+                <label>Marks</label>
+
+                <input
+                  type="number"
+                  className="border w-full p-2 mt-2"
+                  value={studentProject.marks}
+                  onChange={(e) =>
+                    saveStudent(studentProject.studentId, {
+                      marks: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              <div className="mt-4">
+                <label>Teacher Remarks</label>
+
+                <textarea
+                  rows={3}
+                  className="border w-full p-2 mt-2"
+                  value={studentProject.teacherRemarks}
+                  onChange={(e) =>
+                    saveStudent(studentProject.studentId, {
+                      teacherRemarks: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </div>
+          );
+        })
+      )}
     </div>
   );
 };

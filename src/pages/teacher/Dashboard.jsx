@@ -45,13 +45,13 @@ const Dashboard = () => {
   ).length;
 
   const pendingAssignments = assignments.reduce(
-    (count, assignment) =>
-      count +
-      assignment.assignedStudents.filter(
-        (student) => student.status !== "COMPLETED",
-      ).length,
-    0,
-  );
+  (count, assignment) =>
+    count +
+    assignment.assignedStudents.filter(
+      (student) => student.status !== "EVALUATED",
+    ).length,
+  0,
+);
 
   const myProjects = projects.filter(
     (project) => project.teacherId === teacher.id,

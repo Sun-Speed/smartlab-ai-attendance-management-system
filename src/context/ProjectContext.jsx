@@ -43,6 +43,27 @@ export const ProjectProvider = ({ children }) => {
     );
   };
 
+  const updateProjectStudent = (projectId, studentId, updates) => {
+    setProjects((prev) =>
+      prev.map((project) => {
+        if (project.id !== projectId) return project;
+
+        return {
+          ...project,
+
+          assignedStudents: project.assignedStudents.map((student) =>
+            String(student.studentId) === String(studentId)
+              ? {
+                  ...student,
+                  ...updates,
+                }
+              : student,
+          ),
+        };
+      }),
+    );
+  };
+
   const deleteProject = (id) => {
     setProjects((prev) => prev.filter((project) => project.id !== id));
   };
@@ -73,10 +94,10 @@ export const ProjectProvider = ({ children }) => {
       value={{
         projects,
         addProject,
-        updateProject,
         deleteProject,
         assignStudents,
-        getProjectById,
+        updateProject,
+        updateProjectStudent,
       }}
     >
       {children}

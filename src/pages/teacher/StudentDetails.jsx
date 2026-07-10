@@ -5,7 +5,9 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import { useStudents } from "../../context/StudentContext";
 import { useLabSession } from "../../context/LabSessionContext";
 import { useProjects } from "../../context/ProjectContext";
-import ProjectCard from "../../components/teacher/ProjectCard";
+// import ProjectCard from "../../components/teacher/ProjectCard";
+import StudentProjectCard from "../../components/student/StudentProjectCard";
+// import StudentProjectCard from "../../components/teacher/StudentProjectCard";
 
 import { useAssignments } from "../../context/AssignmentContext";
 import AssignmentCard from "../../components/teacher/AssignmentCard";
@@ -18,7 +20,11 @@ const StudentDetails = () => {
 
   const { sessions } = useLabSession();
 
-  const { projects, updateProject } = useProjects();
+  const {
+  projects,
+  updateProjectStudent,
+} = useProjects();
+
   const { assignments, updateAssignment } = useAssignments();
 
   const student = getStudentById(id);
@@ -67,12 +73,12 @@ const StudentDetails = () => {
     ),
   );
 
-const studentAssignments = assignments.filter((assignment) =>
-  assignment.assignedStudents?.some(
-    (assignedStudent) =>
-      String(assignedStudent.studentId) === String(student.id)
-  )
-);
+  const studentAssignments = assignments.filter((assignment) =>
+    assignment.assignedStudents?.some(
+      (assignedStudent) =>
+        String(assignedStudent.studentId) === String(student.id),
+    ),
+  );
 
   return (
     <DashboardLayout title="Student Details">
@@ -142,49 +148,45 @@ const studentAssignments = assignments.filter((assignment) =>
 
       {/* ================= Projects ================= */}
 
-<div className="border rounded p-6 mt-8">
-  <h2 className="text-2xl font-bold mb-6">
-    Assigned Projects
-  </h2>
+      <div className="border rounded p-6 mt-8">
+        <h2 className="text-2xl font-bold mb-6">Assigned Projects</h2>
 
-  {studentProjects.length === 0 ? (
-    <p>No Projects Assigned.</p>
-  ) : (
-    <div className="space-y-5">
-      {studentProjects.map((project) => (
-        <ProjectCard
-          key={project.id}
-          project={project}
-          student={student}
-          updateProject={updateProject}
-        />
-      ))}
-    </div>
-  )}
-</div>
+        {studentProjects.length === 0 ? (
+          <p>No Projects Assigned.</p>
+        ) : (
+          <div className="space-y-5">
+            {studentProjects.map((project) => (
+              <StudentProjectCard
+  key={project.id}
+  project={project}
+  student={student}
+  updateProjectStudent={updateProjectStudent}
+/>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* ================= Assignments ================= */}
 
-<div className="border rounded p-6 mt-8">
-  <h2 className="text-2xl font-bold mb-6">
-    Assignments
-  </h2>
+      <div className="border rounded p-6 mt-8">
+        <h2 className="text-2xl font-bold mb-6">Assignments</h2>
 
-  {studentAssignments.length === 0 ? (
-    <p>No Assignments Assigned.</p>
-  ) : (
-    <div className="space-y-5">
-      {studentAssignments.map((assignment) => (
-  <AssignmentCard
-    key={assignment.id}
-    assignment={assignment}
-    student={student}
-    updateAssignment={updateAssignment}
-  />
-))}
-    </div>
-  )}
-</div>
+        {studentAssignments.length === 0 ? (
+          <p>No Assignments Assigned.</p>
+        ) : (
+          <div className="space-y-5">
+            {studentAssignments.map((assignment) => (
+              <AssignmentCard
+                key={assignment.id}
+                assignment={assignment}
+                student={student}
+                updateAssignment={updateAssignment}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="border rounded p-6 mt-8">
         <h2 className="text-2xl font-bold mb-6">Overall Lab Performance</h2>

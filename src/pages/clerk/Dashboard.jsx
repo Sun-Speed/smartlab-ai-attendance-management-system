@@ -8,9 +8,11 @@ import StudentForm from "../../components/student/StudentForm";
 import StudentTable from "../../components/student/StudentTable";
 
 const ClerkDashboard = () => {
+
   const { students } = useStudents();
 
   const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
 
   const [filters, setFilters] = useState({
     semester: "",
@@ -20,13 +22,12 @@ const ClerkDashboard = () => {
 
   const filteredStudents = useMemo(() => {
     return students.filter((student) => {
-      const matchesSearch =
-        student.name
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
-        student.usn
-          .toLowerCase()
-          .includes(search.toLowerCase());
+      const searchText = search.trim().toLowerCase();
+
+const matchesSearch =
+  searchText === "" ||
+  student.name.toLowerCase().includes(searchText) ||
+  student.usn.toLowerCase().includes(searchText);
 
       const matchesSemester =
         filters.semester === "" ||
@@ -219,18 +220,6 @@ const ClerkDashboard = () => {
 
     </div>
 
-    {/* Student Registration */}
-
-    <div className="bg-white border rounded-xl shadow-sm p-6 mb-8">
-
-      <h2 className="text-2xl font-bold mb-5">
-        Register New Student
-      </h2>
-
-      <StudentForm />
-
-    </div>
-
     {/* Student Table */}
 
     <div className="bg-white border rounded-xl shadow-sm p-6">
@@ -242,7 +231,7 @@ const ClerkDashboard = () => {
         </h2>
 
         <span className="text-gray-500">
-          {filteredStudents.length} Students Found
+          {filteredStudents.length} Students Founddd
         </span>
 
       </div>

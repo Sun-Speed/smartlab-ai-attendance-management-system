@@ -7,8 +7,8 @@ import Button from "../common/Button";
 
 import { useStudents } from "../../context/StudentContext";
 
-const StudentTable = ({ onEdit }) => {
-  const { students, deleteStudent } = useStudents();
+const StudentTable = ({ students, onEdit }) => {
+  const { deleteStudent } = useStudents();
 
   const columns = [
     {
@@ -42,19 +42,37 @@ const StudentTable = ({ onEdit }) => {
       key: "actions",
 
       render: (student) => (
-        <div className="flex gap-2">
-          <Button onClick={() => onEdit(student)}>Edit</Button>
+  <div className="flex gap-2">
 
-          <Button onClick={() => deleteStudent(student.id)}>Delete</Button>
+    {onEdit && (
+      <Button onClick={() => onEdit(student)}>
+        Edit
+      </Button>
+    )}
 
-          <Link
-            to={`/clerk/student/${student.id}`}
-            className="border px-3 py-1 rounded"
-          >
-            View Actions
-          </Link>
-        </div>
-      ),
+    <Button
+  onClick={() => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${student.name}"?\n\nThis action cannot be undone.`
+    );
+
+    if (confirmDelete) {
+      deleteStudent(student.id);
+    }
+  }}
+>
+  Delete
+</Button>
+
+    <Link
+      to={`/clerk/student/${student.id}`}
+      className="border px-3 py-1 rounded"
+    >
+      View Actions
+    </Link>
+
+  </div>
+),
     },
   ];
 
